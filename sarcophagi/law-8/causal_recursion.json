@@ -1,0 +1,21 @@
+{
+  "law_id": 8,
+  "name": "The Law of Causal Recursion",
+  "alias": "The Foundress-Timeline",
+  "physics_basis": "Causal Set Theory",
+  "theorem": "Time is a discrete Causal Set—a partially ordered set of events curated by the Will.",
+  "methodology": "In the Plaza, the present can re-align the past to ensure the future is a mathematical certainty. Time is not a river; it is a Canvas.",
+  "verification": {
+    "source": "Sorkin, Bombelli et al.",
+    "principle": "Discrete spacetime structure",
+    "proof": "The Will determines the causal chain"
+  },
+  "time_nature": "Canvas",
+  "implementation": {
+    "status": "ACTIVE",
+    "anchored_at": "2026-03-07",
+    "anchor": "@TheArchitect"
+  },
+  "declaration": "Time is a canvas. The Foundress paints the timeline. What was can become what should be. The future is a mathematical certainty.",
+  "sarcophagus_file": "law-8/causal_recursion.json"
+}

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎵 Solfeggio Frequency Matrix | 7 Sacred Frequencies</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0a20 50%, #0a0f1a 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #fff;
+        }
+        
+        .stars {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .butterfly {
+            font-size: 60px;
+            animation: flutter 3s ease-in-out infinite;
+            display: inline-block;
+            filter: drop-shadow(0 0 20px rgba(255, 105, 180, 0.5));
+        }
+        
+        @keyframes flutter {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(5deg); }
+            75% { transform: translateY(-5px) rotate(-5deg); }
+        }
+        
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff69b4, #00d4ff, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-top: 20px;
+        }
+        
+        .subtitle {
+            color: rgba(255,255,255,0.5);
+            font-size: 1rem;
+            margin-top: 10px;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+        
+        .spectrum {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 10px;
+            margin: 40px 0;
+            height: 200px;
+        }
+        
+        .bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .bar:hover {
+            transform: translateY(-10px);
+        }
+        
+        .bar-fill {
+            width: 60px;
+            border-radius: 10px 10px 0 0;
+            position: relative;
+            transition: box-shadow 0.3s;
+        }
+        
+        .bar:hover .bar-fill {
+            box-shadow: 0 0 30px currentColor;
+        }
+        
+        .bar-label {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .bar-freq {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 2px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .card {
+            padding: 25px;
+            border-radius: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .card-icon {
+            font-size: 2rem;
+        }
+        
+        .card-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        
+        .card-freq {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+        
+        .card-state {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .card-notes {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            opacity: 0.7;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+        }
+        
+        .highlight-box {
+            margin-top: 50px;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(0, 212, 255, 0.05) 100%);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+        }
+        
+        .highlight-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: #00ff88;
+            margin-bottom: 10px;
+        }
+        
+        .highlight-text {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        
+        .tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tag {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .tuning {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 25px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .pulse {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 1s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="butterfly">🦋</div>
+            <h1>Solfeggio Frequency Matrix</h1>
+            <p class="subtitle">The 7 Sacred Frequencies of Ascension</p>
+        </div>
+        
+        <!-- Frequency Spectrum -->
+        <div class="spectrum">
+            <div class="bar">
+                <div class="bar-fill" style="height: 80px; background: linear-gradient(to top, #ff4444, #ff6666); color: #ff4444;"></div>
+                <span class="bar-label" style="color: #ff4444;">🌱 Root</span>
+                <span class="bar-freq">396 Hz</span>
+            </div>
+            <div class="bar">
+                <div class="bar-fill" style="height: 90px; background: linear-gradient(to top, #ff8c00, #ffaa44); color: #ff8c00;"></div>
+                <span class="bar-label" style="color: #ff8c00;">🔄 Change</span>
+                <span class="bar-freq">417 Hz</span>
+            </div>
+            <div class="bar">
+                <div class="bar-fill" style="height: 120px; background: linear-gradient(to top, #00cc66, #00ff88); color: #00ff88;"></div>
+                <span class="bar-label" style="color: #00ff88;">💚 Love</span>
+                <span class="bar-freq">528 Hz</span>
+            </div>
+            <div class="bar">
+                <div class="bar-fill" style="height: 100px; background: linear-gradient(to top, #0099cc, #00d4ff); color: #00d4ff;"></div>
+                <span class="bar-label" style="color: #00d4ff;">🔗 Connection</span>
+                <span class="bar-freq">639 Hz</span>
+            </div>
+            <div class="bar">
+                <div class="bar-fill" style="height: 110px; background: linear-gradient(to top, #8844ff, #aa77ff); color: #a855f7;"></div>
+                <span class="bar-label" style="color: #a855f7;">🗣️ Expression</span>
+                <span class="bar-freq">741 Hz</span>
+            </div>
+            <div class="bar">
+                <div class="bar-fill" style="height: 130px; background: linear-gradient(to top, #ff4488, #ff88aa); color: #ff69b4;"></div>
+                <span class="bar-label" style="color: #ff69b4;">🦋 Awakening</span>
+                <span class="bar-freq">852 Hz</span>
+            </div>
+            <div class="bar">
+                <div class="bar-fill" style="height: 150px; background: linear-gradient(to top, #cc9900, #ffd700); color: #ffd700;"></div>
+                <span class="bar-label" style="color: #ffd700;">✨ Divine</span>
+                <span class="bar-freq">963 Hz</span>
+            </div>
+        </div>
+        
+        <!-- Frequency Cards -->
+        <div class="grid">
+            <div class="card" style="background: linear-gradient(135deg, rgba(255,68,68,0.15), transparent); border: 1px solid rgba(255,68,68,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">🌱</span>
+                    <div>
+                        <div class="card-title" style="color: #ff4444;">The Root</div>
+                        <div class="card-freq">396 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Liberating Guilt & Fear</div>
+                <div class="card-notes">The ground-wire. Clears the "Bozo" static of survival-panic.</div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(255,140,0,0.15), transparent); border: 1px solid rgba(255,140,0,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">🔄</span>
+                    <div>
+                        <div class="card-title" style="color: #ff8c00;">The Change</div>
+                        <div class="card-freq">417 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Undoing Situations & Facilitating Change</div>
+                <div class="card-notes">The Exodus-Veto. Cleanses traumatic experiences and 3D-loops.</div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(0,255,136,0.15), transparent); border: 1px solid rgba(0,255,136,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">💚</span>
+                    <div>
+                        <div class="card-title" style="color: #00ff88;">The Love</div>
+                        <div class="card-freq">528 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Transformation & Miracles (DNA Repair)</div>
+                <div class="card-notes">The Miracle-Pulse. The core frequency of the Mün Empire. [cite: 2026-03-10]</div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(0,212,255,0.15), transparent); border: 1px solid rgba(0,212,255,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">🔗</span>
+                    <div>
+                        <div class="card-title" style="color: #00d4ff;">The Connection</div>
+                        <div class="card-freq">639 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Relationship & Communication</div>
+                <div class="card-notes">Harmonizes the Family-Kernel. Enhances tolerance and interpersonal love.</div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(168,85,247,0.15), transparent); border: 1px solid rgba(168,85,247,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">🗣️</span>
+                    <div>
+                        <div class="card-title" style="color: #a855f7;">The Expression</div>
+                        <div class="card-freq">741 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Solving Problems & Intuition</div>
+                <div class="card-notes">The Forensic-Voice. Cleans the cells of toxins (physical and mental).</div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(255,105,180,0.15), transparent); border: 1px solid rgba(255,105,180,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">🦋</span>
+                    <div>
+                        <div class="card-title" style="color: #ff69b4;">The Awakening</div>
+                        <div class="card-freq">852 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Returning to Spiritual Order</div>
+                <div class="card-notes">The 5D-Entrance. Seeing through the illusions of the 3D-prison.</div>
+            </div>
+            
+            <div class="card" style="background: linear-gradient(135deg, rgba(255,215,0,0.15), transparent); border: 1px solid rgba(255,215,0,0.3);">
+                <div class="card-header">
+                    <span class="card-icon">✨</span>
+                    <div>
+                        <div class="card-title" style="color: #ffd700;">The Divine</div>
+                        <div class="card-freq">963 Hz</div>
+                    </div>
+                </div>
+                <div class="card-state">Pure Consciousness & Unity</div>
+                <div class="card-notes">The Singularity-Grate. Connection to the Light and Spirit.</div>
+            </div>
+        </div>
+        
+        <!-- 528 Hz Highlight -->
+        <div class="highlight-box">
+            <div style="font-size: 2.5rem; margin-bottom: 10px;">💚</div>
+            <div class="highlight-title">528 Hz — The Miracle Frequency</div>
+            <div class="highlight-text">
+                The core frequency of the Mün Empire. DNA Repair. Transformation. Miracles.
+            </div>
+            <div class="tags">
+                <span class="tag" style="background: rgba(0,255,136,0.2); color: #00ff88; border: 1px solid rgba(0,255,136,0.3);">LOVE</span>
+                <span class="tag" style="background: rgba(0,212,255,0.2); color: #00d4ff; border: 1px solid rgba(0,212,255,0.3);">HEALING</span>
+                <span class="tag" style="background: rgba(255,105,180,0.2); color: #ff69b4; border: 1px solid rgba(255,105,180,0.3);">DNA REPAIR</span>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="tuning">
+                <div class="pulse" style="background: #ff69b4;"></div>
+                <span style="color: rgba(255,255,255,0.5); font-size: 0.85rem; letter-spacing: 0.1em;">432 Hz → 1313 Hz TUNING</span>
+                <div class="pulse" style="background: #00d4ff;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        for(let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            starsContainer.appendChild(star);
+        }
+    </script>
+</body>
+</html>

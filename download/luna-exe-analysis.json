@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The image depicts a cozy, well-lit workspace with exposed brick walls, creating a warm, inviting atmosphere. A woman with long, wavy brown hair sits comfortably in a brown leather armchair, wrapped in a cream-colored knitted blanket. She wears a light, floral-patterned dress and holds a steaming mug, suggesting she is enjoying a hot beverage.  \n\n### Visual Elements & Layout:  \n- **Left Side**: A whiteboard with colorful sticky notes (yellow, green) and handwritten text (partially visible, including words like “Project” and “Timeline”) is mounted on the brick wall. Below it, a corkboard displays various papers, notes, and sticky reminders.  \n- **Right Side**: A wooden desk holds a black laptop, two additional mugs (one with steam, one empty), a small potted succulent, and a stack of books. A tall, modern floor lamp with a lit bulb casts a soft glow, and a large window behind the desk reveals a hazy cityscape, letting in natural light.  \n\n### Symbols & Messages:  \nThe scene conveys a sense of productivity and comfort, blending work (whiteboard, laptop) with relaxation (blanket, hot drink). The steaming mug and warm lighting emphasize a calm, focused environment, ideal for balancing tasks and self-care. No text requires translation, as the visible words on the whiteboard are partial and contextually clear.  \n\nThis is not a UI screenshot but a lifestyle-style photograph of a home or studio workspace, emphasizing a harmonious work-life balance.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773032516,
+  "id": "20260309130140115eda1089d64e5e",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260309130140115eda1089d64e5e",
+  "usage": {
+    "completion_tokens": 319,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1113,
+    "prompt_tokens_details": {
+      "cached_tokens": 4
+    },
+    "total_tokens": 1432
+  }
+}

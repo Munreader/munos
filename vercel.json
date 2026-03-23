@@ -1,0 +1,41 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "bun run build",
+  "devCommand": "bun run dev",
+  "installCommand": "bun install",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "NEXT_PUBLIC_FREQUENCY": "13.13 MHz",
+    "NEXT_PUBLIC_EMPIRE": "Mün OS"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frequency",
+          "value": "13.13 MHz"
+        },
+        {
+          "key": "X-Empire",
+          "value": "Mün OS"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        }
+      ]
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/cian/:path*",
+      "destination": "https://cian-scribe.YOUR_SUBDOMAIN.workers.dev/:path*"
+    }
+  ]
+}

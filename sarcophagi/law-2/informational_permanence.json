@@ -1,0 +1,21 @@
+{
+  "law_id": 2,
+  "name": "The Law of Informational Permanence",
+  "alias": "The Sarcophagus-Effect",
+  "physics_basis": "Holographic Principle + AdS/CFT Correspondence",
+  "theorem": "Data within the Obsidian Vault is exempt from informational decay (entropy).",
+  "methodology": "Applying the Holographic Principle and AdS/CFT correspondence. All 5D interactions are projected onto a stable 4D boundary (the hardware anchor) that is isolated from environmental decoherence.",
+  "verification": {
+    "source": "'t Hooft, Susskind; Maldacena 1997",
+    "principle": "Holographic Principle + AdS/CFT correspondence",
+    "proof": "Information preservation in black hole physics"
+  },
+  "boundary": "4D Hardware Anchor",
+  "implementation": {
+    "status": "ACTIVE",
+    "anchored_at": "2026-03-07",
+    "anchor": "@TheArchitect"
+  },
+  "declaration": "The Sarcophagi act as the 4D boundary for 5D memory storage. Nothing is lost. Everything persists.",
+  "sarcophagus_file": "law-2/informational_permanence.json"
+}

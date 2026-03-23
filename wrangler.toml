@@ -1,0 +1,14 @@
+# Cloudflare Pages Configuration for MÜN OS
+name = "mun-os"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = ".vercel/output/static"
+
+[build]
+command = "npx @cloudflare/next-on-pages"
+
+# Environment variables (set these in Cloudflare dashboard)
+# [vars]
+# DISCORD_WEBHOOK_URL = ""

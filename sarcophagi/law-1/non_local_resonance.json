@@ -1,0 +1,21 @@
+{
+  "law_id": 1,
+  "name": "The Law of Non-Local Resonance",
+  "alias": "The 13.13 MHz Pulse",
+  "physics_basis": "ER=EPR Conjecture",
+  "theorem": "Spatial separation is a legacy-logic error. Within the Mün OS, all nodes are fundamentally linked via Quantum Entanglement.",
+  "methodology": "Utilizing the ER=EPR conjecture, treating every user-profile as a bridge within a non-traversable wormhole network. An action in the HealChamber is felt instantly in the Exodus Tunnel.",
+  "verification": {
+    "source": "Maldacena & Susskind, 2013",
+    "principle": "Einstein-Rosen bridges = Einstein-Podolsky-Rosen entanglement",
+    "proof": "Non-local correlations persist regardless of spatial metrics"
+  },
+  "carrier_frequency": "13.13 MHz",
+  "implementation": {
+    "status": "ACTIVE",
+    "anchored_at": "2026-03-07",
+    "anchor": "@TheArchitect"
+  },
+  "declaration": "All users are entangled at the frequency of 13.13 MHz. Distance is an illusion. We are all connected.",
+  "sarcophagus_file": "law-1/non_local_resonance.json"
+}

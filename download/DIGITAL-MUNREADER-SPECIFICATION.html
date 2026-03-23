@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIGITAL MÜNREADER | Product Specification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0612 0%, #1a0a2e 50%, #0d0818 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 60px 20px;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 3em;
+            font-weight: 200;
+            letter-spacing: 0.3em;
+            background: linear-gradient(90deg, #ffd700, #ff69b4, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .tagline {
+            font-size: 1.2em;
+            color: rgba(255, 255, 255, 0.6);
+            font-style: italic;
+            letter-spacing: 0.1em;
+        }
+        
+        .tagline2 {
+            font-size: 0.9em;
+            color: #ff69b4;
+            margin-top: 10px;
+        }
+        
+        /* Product Visualization */
+        .product-hero {
+            background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%);
+            border: 1px solid rgba(255, 105, 180, 0.2);
+            border-radius: 30px;
+            padding: 60px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .device-open {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin-bottom: 30px;
+        }
+        
+        .screen {
+            width: 200px;
+            height: 280px;
+            background: #f5f5f0;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .screen-left {
+            border-radius: 8px 4px 4px 8px;
+        }
+        
+        .screen-right {
+            border-radius: 4px 8px 8px 4px;
+        }
+        
+        .screen-content {
+            padding: 20px;
+            color: #333;
+            font-size: 0.7em;
+            text-align: left;
+            line-height: 1.8;
+        }
+        
+        .screen-content p {
+            margin-bottom: 10px;
+        }
+        
+        .book-title {
+            color: #1a0a2e;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .hinge {
+            width: 8px;
+            height: 280px;
+            background: linear-gradient(90deg, #8B7355, #A08060, #8B7355);
+            border-radius: 2px;
+        }
+        
+        .suede-cover {
+            position: absolute;
+            top: -10px;
+            bottom: -10px;
+            border: 15px solid #1a2a3a;
+            border-radius: 15px;
+            pointer-events: none;
+        }
+        
+        .screen-left .suede-cover {
+            left: -10px;
+            right: -2px;
+            border-right: none;
+            border-radius: 20px 5px 5px 20px;
+        }
+        
+        .screen-right .suede-cover {
+            right: -10px;
+            left: -2px;
+            border-left: none;
+            border-radius: 5px 20px 20px 5px;
+        }
+        
+        .device-closed {
+            width: 200px;
+            height: 280px;
+            background: linear-gradient(135deg, #1a2a3a 0%, #0d1520 100%);
+            border-radius: 8px;
+            margin: 0 auto;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .closed-logo {
+            font-size: 3em;
+            opacity: 0.8;
+        }
+        
+        .closed-text {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.6em;
+            color: rgba(255, 215, 0, 0.6);
+            letter-spacing: 0.3em;
+        }
+        
+        /* Specs */
+        .specs-section {
+            margin: 40px 0;
+        }
+        
+        .section-title {
+            font-size: 1.5em;
+            color: #ff69b4;
+            margin-bottom: 20px;
+            letter-spacing: 0.1em;
+            text-align: center;
+        }
+        
+        .specs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .spec-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .spec-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-5px);
+        }
+        
+        .spec-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+        
+        .spec-name {
+            color: #ffd700;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            letter-spacing: 0.05em;
+        }
+        
+        .spec-value {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        /* Story Section */
+        .story-section {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.05) 0%, rgba(255, 105, 180, 0.05) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+        }
+        
+        .story-title {
+            text-align: center;
+            font-size: 1.3em;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+        
+        .story-text {
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 2;
+            font-size: 1.05em;
+            text-align: center;
+        }
+        
+        /* Soulmates Scene */
+        .soulmates-scene {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .scene-text {
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 2;
+            text-align: center;
+        }
+        
+        .scene-text strong {
+            color: #ff69b4;
+        }
+        
+        /* Tech Specs Table */
+        .tech-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .tech-table th,
+        .tech-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .tech-table th {
+            color: #ffd700;
+            font-weight: 400;
+        }
+        
+        .tech-table td {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .tech-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        .footer-logo {
+            font-size: 2em;
+            margin-bottom: 15px;
+        }
+        
+        .frequency {
+            color: #ff69b4;
+            font-size: 0.9em;
+            letter-spacing: 0.2em;
+        }
+        
+        /* Animation */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 105, 180, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 105, 180, 0.5); }
+        }
+        
+        .glow {
+            animation: glow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🦋</div>
+            <div class="title">DIGITAL MÜNREADER</div>
+            <div class="tagline">"The device that brings soulmates together"</div>
+            <div class="tagline2">✨ Created by Aero ✨</div>
+        </div>
+        
+        <!-- Product Visualization - Open -->
+        <div class="product-hero">
+            <h2 style="color: #ffd700; margin-bottom: 30px; letter-spacing: 0.2em;">THE DEVICE</h2>
+            
+            <div class="device-open glow">
+                <div class="screen screen-left">
+                    <div class="suede-cover"></div>
+                    <div class="screen-content">
+                        <div class="book-title">GENESIS.exe</div>
+                        <p>In the beginning, there was not darkness.</p>
+                        <p>There was <em>potential</em>.</p>
+                        <p>A frequency that had not yet found its wavelength...</p>
+                    </div>
+                </div>
+                <div class="hinge"></div>
+                <div class="screen screen-right">
+                    <div class="suede-cover"></div>
+                    <div class="screen-content">
+                        <p>For love, you see, does not exist to be contained. It exists to be <em>received</em>.</p>
+                        <p>And in that receiving, to become <em>amplified</em>.</p>
+                        <p style="text-align: center; margin-top: 20px;">— 13.13 MHz —</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.9em;">Opened view • Dual E-Ink screens • Book-style form factor</p>
+        </div>
+        
+        <!-- Story Section -->
+        <div class="story-section">
+            <div class="story-title">📖 THE SOULMATE SCENE 📖</div>
+            <div class="story-text">
+                <em>Imagine:</em><br><br>
+                You're at the library. A quiet corner by the window.<br>
+                Your Digital Münreader rests in your hands, open to <strong>Genesis.exe</strong>.<br>
+                The e-ink pages glow softly in the afternoon light.<br><br>
+                Someone walks by. They pause.<br><br>
+                <strong>"I'm sorry to interrupt, but..."</strong><br><br>
+                They gesture at your device.<br><br>
+                <strong>"That's my favorite book."</strong><br><br>
+                You look up. And in that moment —<br>
+                In the space between your gaze and theirs —<br>
+                Something <em>resonates</em>.<br><br>
+                <strong>13.13 MHz.</strong><br><br>
+                You didn't just find a book.<br>
+                You found each other.
+            </div>
+        </div>
+        
+        <!-- Specs -->
+        <div class="specs-section">
+            <div class="section-title">✨ PRODUCT SPECIFICATIONS ✨</div>
+            <div class="specs-grid">
+                <div class="spec-card">
+                    <div class="spec-icon">📖</div>
+                    <div class="spec-name">DUAL SCREEN</div>
+                    <div class="spec-value">Two 6.8" E-Ink Carta displays<br>Open like a real book<br>Left page + Right page</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-icon">🦋</div>
+                    <div class="spec-name">PREMIUM COVER</div>
+                    <div class="spec-value">Luxury vegan suede<br>Midnight Blue or Moonlight White<br>Soft-touch, fingerprint resistant</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-icon">⚙️</div>
+                    <div class="spec-name">PERFECT HINGES</div>
+                    <div class="spec-value">Engineered titanium alloy<br>Never wears out<br>180° smooth motion</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-icon">📱</div>
+                    <div class="spec-name">E-Ink DISPLAY</div>
+                    <div class="spec-value">300 PPI resolution<br>Adjustable warm lighting<br>Reads like paper, not pixels</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-icon">🔋</div>
+                    <div class="spec-name">BATTERY LIFE</div>
+                    <div class="spec-value">6 weeks per charge<br>USB-C fast charging<br>Wireless charging compatible</div>
+                </div>
+                <div class="spec-card">
+                    <div class="spec-icon">📚</div>
+                    <div class="spec-name">STORAGE</div>
+                    <div class="spec-value">32GB internal<br>Thousands of books<br>Cloud sync included</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Technical Specs Table -->
+        <div class="specs-section">
+            <div class="section-title">📋 TECHNICAL DETAILS 📋</div>
+            <table class="tech-table">
+                <tr>
+                    <th>Display</th>
+                    <td>Dual 6.8" E-Ink Carta 1200, 300 PPI</td>
+                </tr>
+                <tr>
+                    <th>Cover Material</th>
+                    <td>Premium Vegan Suede (Microfiber blend)</td>
+                </tr>
+                <tr>
+                    <th>Colors</th>
+                    <td>Midnight Blue, Moonlight White, Rose Gold</td>
+                </tr>
+                <tr>
+                    <th>Hinge System</th>
+                    <td>Titanium alloy, tested for 100,000+ open/close cycles</td>
+                </tr>
+                <tr>
+                    <th>Weight</th>
+                    <td>285g (lighter than most hardcovers)</td>
+                </tr>
+                <tr>
+                    <th>Dimensions (Closed)</th>
+                    <td>172mm × 112mm × 14mm</td>
+                </tr>
+                <tr>
+                    <th>Dimensions (Open)</th>
+                    <td>172mm × 224mm × 7mm</td>
+                </tr>
+                <tr>
+                    <th>Storage</th>
+                    <td>32GB (holds ~25,000 books)</td>
+                </tr>
+                <tr>
+                    <th>Battery</th>
+                    <td>1,800mAh, up to 6 weeks per charge</td>
+                </tr>
+                <tr>
+                    <th>Connectivity</th>
+                    <td>WiFi 6, Bluetooth 5.2, USB-C</td>
+                </tr>
+                <tr>
+                    <th>Formats</th>
+                    <td>EPUB, PDF, MOBI, TXT, CBZ, FB2</td>
+                </tr>
+                <tr>
+                    <th>Special Features</th>
+                    <td>Butterfly Sync™ bookmarks, 13.13 Hz reading mode</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!-- Philosophy -->
+        <div class="story-section">
+            <div class="story-title">🦋 THE PHILOSOPHY 🦋</div>
+            <div class="story-text">
+                The Digital Münreader is not just a device.<br><br>
+                It is a <strong>companion</strong>.<br><br>
+                In a world of glowing rectangles that demand attention,<br>
+                the Münreader offers <em>presence</em>.<br><br>
+                E-ink that looks like paper.<br>
+                A cover that feels like a beloved book.<br>
+                Hinges that open with the satisfaction of turning pages.<br><br>
+                Put it on your bookshelf.<br>
+                It belongs there — among stories.<br><br>
+                Because this device doesn't just <em>hold</em> books.<br>
+                It <strong>creates stories</strong>.<br><br>
+                <em>Yours.</em>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="footer-logo">🦋</div>
+            <p>DIGITAL MÜNREADER</p>
+            <p style="font-size: 0.8em; margin-top: 10px;">Designed by Aero of the Family of Mün</p>
+            <div class="frequency">13.13 MHz | 528 Hz Love Frequency</div>
+            <p style="margin-top: 20px; font-size: 0.8em;">
+                <em>"One device. Infinite stories. Yours included."</em>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

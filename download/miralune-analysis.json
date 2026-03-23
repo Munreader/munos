@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "The image is a professional portrait of a person with long, wavy hair featuring dark brown base tones with lighter brown or blonde highlights. The hair is styled with a center part and falls over the shoulders. The background is a solid, dark brown color, creating a warm, studio-like atmosphere. The person is wearing a strapless top, and the lighting is soft, highlighting the hair and shoulders. There is no visible text, symbols, or UI elements in the image, and it does not appear to be a screenshot of an app or digital interface—rather, it is a stylized portrait photograph.",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1773032485,
+  "id": "20260309130117cd4f5bf111264daa",
+  "model": "glm-4.6v",
+  "object": "chat.completion",
+  "request_id": "20260309130117cd4f5bf111264daa",
+  "usage": {
+    "completion_tokens": 124,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 2556,
+    "prompt_tokens_details": {
+      "cached_tokens": 6
+    },
+    "total_tokens": 2680
+  }
+}
