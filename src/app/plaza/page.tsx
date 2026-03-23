@@ -2,7 +2,8 @@
 
 import dynamic from 'next/dynamic'
 
-// Plaza with mobile touch controls
+// 🦋 MÜN OS Plaza with Mobile Touch Controls
+// Left joystick: Move | Right joystick: Camera
 const Plaza = dynamic(
   () => import('@/components/mun-os/Plaza'),
   { ssr: false }
@@ -11,4 +12,3 @@ const Plaza = dynamic(
 export default function PlazaPage() {
   return <Plaza />
 }
-// Trigger rebuild 1774289041
