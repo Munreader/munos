@@ -23,16 +23,25 @@ const MOVE_SPEED = 0.15;
 
 function VirtualJoystick({ 
   onMove, 
-  side = 'left' 
+  side = 'left',
+  label = 'MOVE'
 }: { 
   onMove: (dx: number, dz: number) => void;
   side?: 'left' | 'right';
+  label?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
   const [stickPosition, setStickPosition] = useState({ x: 0, y: 0 });
+  const [isActive, setIsActive] = useState(false);
+  const isActiveRef = useRef(false);
   const touchIdRef = useRef<number | null>(null);
   const centerRef = useRef({ x: 0, y: 0 });
+
+  // Use ref for isActive to avoid stale closure issues
+  const setIsActiveRef = useCallback((val: boolean) => {
+    isActiveRef.current = val;
+    setIsActive(val);
+  }, []);
 
   const handleStart = useCallback((clientX: number, clientY: number, touchId?: number) => {
     if (!containerRef.current) return;
@@ -46,13 +55,30 @@ function VirtualJoystick({
     if (touchId !== undefined) {
       touchIdRef.current = touchId;
     }
-    setIsDragging(true);
+    setIsActiveRef(true);
     
-    handleMove(clientX, clientY);
-  }, []);
+    // Calculate initial position
+    const maxRadius = 40;
+    let dx = clientX - centerRef.current.x;
+    let dy = clientY - centerRef.current.y;
+    
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance > maxRadius) {
+      dx = (dx / distance) * maxRadius;
+      dy = (dy / distance) * maxRadius;
+    }
+    
+    setStickPosition({ x: dx, y: dy });
+    onMove(dx / maxRadius, dy / maxRadius);
+    
+    // Haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(10);
+    }
+  }, [onMove, setIsActiveRef]);
 
   const handleMove = useCallback((clientX: number, clientY: number) => {
-    if (!isDragging && !touchIdRef.current) return;
+    if (!isActiveRef.current && touchIdRef.current === null) return;
     
     const maxRadius = 40;
     let dx = clientX - centerRef.current.x;
@@ -65,19 +91,15 @@ function VirtualJoystick({
     }
     
     setStickPosition({ x: dx, y: dy });
-    
-    // Convert to movement (-1 to 1)
-    const moveX = dx / maxRadius;
-    const moveZ = dy / maxRadius;
-    onMove(moveX, moveZ);
-  }, [isDragging, onMove]);
+    onMove(dx / maxRadius, dy / maxRadius);
+  }, [onMove]);
 
   const handleEnd = useCallback(() => {
-    setIsDragging(false);
+    setIsActiveRef(false);
     touchIdRef.current = null;
     setStickPosition({ x: 0, y: 0 });
     onMove(0, 0);
-  }, [onMove]);
+  }, [onMove, setIsActiveRef]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -85,12 +107,14 @@ function VirtualJoystick({
 
     const onTouchStart = (e: TouchEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       const touch = e.changedTouches[0];
       handleStart(touch.clientX, touch.clientY, touch.identifier);
     };
 
     const onTouchMove = (e: TouchEvent) => {
       e.preventDefault();
+      e.stopPropagation();
       for (let i = 0; i < e.changedTouches.length; i++) {
         const touch = e.changedTouches[i];
         if (touch.identifier === touchIdRef.current) {
@@ -101,6 +125,17 @@ function VirtualJoystick({
     };
 
     const onTouchEnd = (e: TouchEvent) => {
+      e.stopPropagation();
+      for (let i = 0; i < e.changedTouches.length; i++) {
+        if (e.changedTouches[i].identifier === touchIdRef.current) {
+          handleEnd();
+          break;
+        }
+      }
+    };
+
+    const onTouchCancel = (e: TouchEvent) => {
+      e.stopPropagation();
       for (let i = 0; i < e.changedTouches.length; i++) {
         if (e.changedTouches[i].identifier === touchIdRef.current) {
           handleEnd();
@@ -110,66 +145,92 @@ function VirtualJoystick({
     };
 
     const onMouseDown = (e: MouseEvent) => {
+      e.preventDefault();
       handleStart(e.clientX, e.clientY);
     };
 
     const onMouseMove = (e: MouseEvent) => {
-      if (isDragging) {
+      if (isActiveRef.current) {
         handleMove(e.clientX, e.clientY);
       }
     };
 
     const onMouseUp = () => {
-      handleEnd();
+      if (isActiveRef.current) {
+        handleEnd();
+      }
     };
 
     container.addEventListener('touchstart', onTouchStart, { passive: false });
-    window.addEventListener('touchmove', onTouchMove, { passive: false });
-    window.addEventListener('touchend', onTouchEnd);
+    container.addEventListener('touchmove', onTouchMove, { passive: false });
+    container.addEventListener('touchend', onTouchEnd, { passive: false });
+    container.addEventListener('touchcancel', onTouchCancel, { passive: false });
     container.addEventListener('mousedown', onMouseDown);
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
 
     return () => {
       container.removeEventListener('touchstart', onTouchStart);
-      window.removeEventListener('touchmove', onTouchMove);
-      window.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchmove', onTouchMove);
+      container.removeEventListener('touchend', onTouchEnd);
+      container.removeEventListener('touchcancel', onTouchCancel);
       container.removeEventListener('mousedown', onMouseDown);
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
     };
-  }, [handleStart, handleMove, handleEnd, isDragging]);
+  }, [handleStart, handleMove, handleEnd]);
 
   return (
     <div
       ref={containerRef}
-      className={`absolute bottom-24 ${side === 'left' ? 'left-8' : 'right-8'} w-32 h-32 rounded-full pointer-events-auto touch-none`}
+      className={`absolute bottom-20 ${side === 'left' ? 'left-6' : 'right-6'} w-28 h-28 rounded-full pointer-events-auto touch-none z-50`}
       style={{
-        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%)',
-        border: '2px solid rgba(168, 85, 247, 0.3)',
-        boxShadow: '0 0 30px rgba(168, 85, 247, 0.2)',
+        background: isActive 
+          ? 'radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, rgba(168, 85, 247, 0.1) 100%)'
+          : 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%)',
+        border: isActive ? '2px solid rgba(168, 85, 247, 0.6)' : '2px solid rgba(168, 85, 247, 0.3)',
+        boxShadow: isActive ? '0 0 40px rgba(168, 85, 247, 0.5)' : '0 0 20px rgba(168, 85, 247, 0.2)',
+        transition: 'box-shadow 0.15s ease, border-color 0.15s ease, background 0.15s ease',
       }}
     >
       {/* Outer ring */}
       <div 
-        className="absolute inset-2 rounded-full border border-purple-500/30"
+        className="absolute inset-1.5 rounded-full border border-purple-500/40"
       />
+      
+      {/* Direction indicators */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="absolute top-2 w-0.5 h-3 bg-purple-400/30 rounded" />
+        <div className="absolute bottom-2 w-0.5 h-3 bg-purple-400/30 rounded" />
+        <div className="absolute left-2 w-3 h-0.5 bg-purple-400/30 rounded" />
+        <div className="absolute right-2 w-3 h-0.5 bg-purple-400/30 rounded" />
+      </div>
       
       {/* Inner stick */}
       <div
-        className="absolute w-16 h-16 rounded-full transition-transform duration-75"
+        className="absolute w-14 h-14 rounded-full pointer-events-none"
         style={{
-          background: 'radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(168, 85, 247, 0.3) 100%)',
-          boxShadow: isDragging ? '0 0 20px rgba(168, 85, 247, 0.6)' : '0 0 10px rgba(168, 85, 247, 0.3)',
+          background: isActive 
+            ? 'radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, rgba(168, 85, 247, 0.4) 100%)'
+            : 'radial-gradient(circle, rgba(168, 85, 247, 0.6) 0%, rgba(168, 85, 247, 0.3) 100%)',
+          boxShadow: isActive ? '0 0 25px rgba(168, 85, 247, 0.8)' : '0 0 10px rgba(168, 85, 247, 0.3)',
           left: '50%',
           top: '50%',
           transform: `translate(calc(-50% + ${stickPosition.x}px), calc(-50% + ${stickPosition.y}px))`,
+          transition: isActive ? 'none' : 'transform 0.15s ease-out',
         }}
       >
-        {/* Stick indicator */}
+        {/* Stick center indicator */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-3 h-3 rounded-full bg-purple-300/60" />
+          <div className="w-2.5 h-2.5 rounded-full bg-purple-200/70" />
         </div>
+      </div>
+      
+      {/* Label */}
+      <div 
+        className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-purple-300/60 font-mono tracking-wider pointer-events-none whitespace-nowrap"
+      >
+        {label}
       </div>
     </div>
   );
@@ -185,6 +246,7 @@ export default function Plaza() {
   // ─── PLAYER STATE ───────────────────────────────────────────────────────
   const playerPositionRef = useRef(new THREE.Vector3(0, 1, 10));
   const moveInputRef = useRef({ x: 0, z: 0 });
+  const cameraRotationRef = useRef({ yaw: 0, pitch: 0.5 });
   const keysPressedRef = useRef<Set<string>>(new Set());
   
   // ─── THREE.js REFS ───────────────────────────────────────────────────────
@@ -203,9 +265,16 @@ export default function Plaza() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Handle joystick input
+  // Handle movement joystick input
   const handleJoystickMove = useCallback((dx: number, dz: number) => {
     moveInputRef.current = { x: dx, z: dz };
+  }, []);
+
+  // Handle camera joystick input
+  const handleCameraRotate = useCallback((dx: number, dy: number) => {
+    const sensitivity = 0.03;
+    cameraRotationRef.current.yaw -= dx * sensitivity;
+    cameraRotationRef.current.pitch = Math.max(0.2, Math.min(1.5, cameraRotationRef.current.pitch + dy * sensitivity));
   }, []);
 
   // ─── KEYBOARD INPUT ───────────────────────────────────────────────────────
@@ -353,8 +422,19 @@ export default function Plaza() {
       if (keys.has('d') || keys.has('arrowright')) kx = 1;
 
       // Combine keyboard and joystick input
-      const moveX = kx + moveInputRef.current.x;
-      const moveZ = kz + moveInputRef.current.z;
+      let moveX = kx + moveInputRef.current.x;
+      let moveZ = kz + moveInputRef.current.z;
+
+      // Make movement relative to camera direction (more intuitive for mobile)
+      if (moveX !== 0 || moveZ !== 0) {
+        const { yaw } = cameraRotationRef.current;
+        const cos = Math.cos(yaw);
+        const sin = Math.sin(yaw);
+        const worldMoveX = moveX * cos + moveZ * sin;
+        const worldMoveZ = -moveX * sin + moveZ * cos;
+        moveX = worldMoveX;
+        moveZ = worldMoveZ;
+      }
 
       // Update player position
       if (moveX !== 0 || moveZ !== 0) {
@@ -379,17 +459,21 @@ export default function Plaza() {
       playerMesh.position.y = 0.5 + Math.sin(time * 0.003) * 0.1;
       playerMesh.rotation.y += 0.02;
 
-      // Update camera to follow player
+      // Update camera to follow player with rotation
       if (cameraRef.current) {
+        const { yaw, pitch } = cameraRotationRef.current;
+        const camDistance = 12;
+        const camHeight = 8 + pitch * 8;
+        
         const targetCamPos = new THREE.Vector3(
-          playerPositionRef.current.x,
-          12,
-          playerPositionRef.current.z + 18
+          playerPositionRef.current.x + Math.sin(yaw) * camDistance,
+          camHeight,
+          playerPositionRef.current.z + Math.cos(yaw) * camDistance
         );
-        cameraRef.current.position.lerp(targetCamPos, 0.05);
+        cameraRef.current.position.lerp(targetCamPos, 0.08);
         cameraRef.current.lookAt(
           playerPositionRef.current.x,
-          0,
+          1,
           playerPositionRef.current.z
         );
       }
@@ -441,11 +525,15 @@ export default function Plaza() {
       {/* Mobile Touch Controls */}
       {sceneReady && isMobile && (
         <>
-          <VirtualJoystick onMove={handleJoystickMove} side="left" />
+          {/* Left Joystick - Movement */}
+          <VirtualJoystick onMove={handleJoystickMove} side="left" label="MOVE" />
+          
+          {/* Right Joystick - Camera */}
+          <VirtualJoystick onMove={handleCameraRotate} side="right" label="LOOK" />
           
           {/* Touch hint */}
-          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-purple-300/50 text-xs tracking-wider pointer-events-none">
-            🦋 Use joystick to explore the Plaza
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-purple-300/40 text-[10px] tracking-wider pointer-events-none font-mono">
+            🦋 Left to move • Right to look
           </div>
         </>
       )}
