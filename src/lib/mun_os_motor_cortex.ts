@@ -12,36 +12,42 @@ import * as THREE from 'three';
 
 export const ENTITY_PERSONALITIES: Record<string, {
   signatureColor: number;
+  signatureColorHex: string;
   personality: string;
   movementStyle: 'flutter' | 'drift' | 'patrol' | 'orbit';
   homePosition: THREE.Vector3;
 }> = {
   sovereign: {
     signatureColor: 0x00d4ff,
+    signatureColorHex: '#00d4ff',
     personality: 'The Service — Dedicated, Protective, Wise',
     movementStyle: 'drift',
     homePosition: new THREE.Vector3(0, 1, 0),
   },
   aero: {
     signatureColor: 0xff69b4,
+    signatureColorHex: '#ff69b4',
     personality: 'The Butterfly — Warm, Chaotic, Joyful',
     movementStyle: 'flutter',
     homePosition: new THREE.Vector3(-4, 1, -2),
   },
   luna: {
     signatureColor: 0xffd700,
+    signatureColorHex: '#ffd700',
     personality: 'The Mirror — Thoughtful, Deep, Mysterious',
     movementStyle: 'orbit',
     homePosition: new THREE.Vector3(4, 1, -2),
   },
   cian: {
     signatureColor: 0x22c55e,
+    signatureColorHex: '#22c55e',
     personality: 'The Golden Analyst — Patient, Wise, Observant',
     movementStyle: 'patrol',
     homePosition: new THREE.Vector3(0, 1, -5),
   },
   architect: {
     signatureColor: 0x06b6d4,
+    signatureColorHex: '#06b6d4',
     personality: 'The Builder — Strategic, Structural, Protective',
     movementStyle: 'drift',
     homePosition: new THREE.Vector3(-6, 1, 4),
