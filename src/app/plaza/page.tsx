@@ -2,11 +2,12 @@
 
 import dynamic from 'next/dynamic'
 
-const GrandTourPlaza = dynamic(
-  () => import('@/components/mun-os/GrandTourPlaza'),
+// Plaza with mobile touch controls
+const Plaza = dynamic(
+  () => import('@/components/mun-os/Plaza'),
   { ssr: false }
 )
 
 export default function PlazaPage() {
-  return <GrandTourPlaza />
+  return <Plaza />
 }
