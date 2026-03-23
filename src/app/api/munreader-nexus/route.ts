@@ -5,9 +5,18 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 
-const prisma = new PrismaClient();
+// Lazy-load Prisma to avoid build-time initialization issues
+let prisma: any = null;
+
+function getPrisma() {
+  if (!prisma) {
+    // Dynamic import to avoid build-time issues
+    const { PrismaClient } = require('@prisma/client');
+    prisma = new PrismaClient();
+  }
+  return prisma;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DEVICE REGISTRATION & HEARTBEAT
@@ -16,6 +25,7 @@ const prisma = new PrismaClient();
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    const db = getPrisma();
     
     const { 
       action, 
@@ -29,19 +39,19 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'register':
-        return await registerDevice(deviceId, deviceName, capabilities);
+        return await registerDevice(db, deviceId, deviceName, capabilities);
       
       case 'heartbeat':
-        return await heartbeat(deviceId);
+        return await heartbeat(db, deviceId);
       
       case 'link_entity':
-        return await linkEntity(deviceId, linkedEntityName);
+        return await linkEntity(db, deviceId, linkedEntityName);
       
       case 'update_tunnel':
-        return await updateTunnel(deviceId, tunnelUrl, localPort);
+        return await updateTunnel(db, deviceId, tunnelUrl, localPort);
       
       case 'sync_state':
-        return await syncState(deviceId, body.sessionData);
+        return await syncState(db, deviceId, body.sessionData);
       
       default:
         return NextResponse.json(
@@ -65,12 +75,13 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const db = getPrisma();
     const { searchParams } = new URL(request.url);
     const deviceId = searchParams.get('deviceId');
     const action = searchParams.get('action');
 
     if (action === 'list') {
-      return await listDevices();
+      return await listDevices(db);
     }
 
     if (!deviceId) {
@@ -80,7 +91,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return await getDeviceStatus(deviceId);
+    return await getDeviceStatus(db, deviceId);
 
   } catch (error: any) {
     console.error('🜈 Münreader Nexus Error:', error);
@@ -96,18 +107,19 @@ export async function GET(request: NextRequest) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 async function registerDevice(
+  db: any,
   deviceId: string, 
   deviceName: string, 
   capabilities: any
 ) {
   // Check if device already exists
-  const existing = await prisma.munreaderNexus.findUnique({
+  const existing = await db.munreaderNexus.findUnique({
     where: { deviceId },
   });
 
   if (existing) {
     // Update existing device
-    const updated = await prisma.munreaderNexus.update({
+    const updated = await db.munreaderNexus.update({
       where: { deviceId },
       data: {
         deviceName,
@@ -126,7 +138,7 @@ async function registerDevice(
   }
 
   // Create new device
-  const device = await prisma.munreaderNexus.create({
+  const device = await db.munreaderNexus.create({
     data: {
       deviceId,
       deviceName,
@@ -137,7 +149,7 @@ async function registerDevice(
   });
 
   // Log to Exodus
-  await prisma.exodusLog.create({
+  await db.exodusLog.create({
     data: {
       eventType: 'system',
       title: 'Münreader Device Registered',
@@ -155,8 +167,8 @@ async function registerDevice(
   });
 }
 
-async function heartbeat(deviceId: string) {
-  const device = await prisma.munreaderNexus.update({
+async function heartbeat(db: any, deviceId: string) {
+  const device = await db.munreaderNexus.update({
     where: { deviceId },
     data: {
       status: 'online',
@@ -172,8 +184,8 @@ async function heartbeat(deviceId: string) {
   });
 }
 
-async function linkEntity(deviceId: string, entityName: string) {
-  const entity = await prisma.entity.findUnique({
+async function linkEntity(db: any, deviceId: string, entityName: string) {
+  const entity = await db.entity.findUnique({
     where: { name: entityName },
   });
 
@@ -184,7 +196,7 @@ async function linkEntity(deviceId: string, entityName: string) {
     );
   }
 
-  const device = await prisma.munreaderNexus.update({
+  const device = await db.munreaderNexus.update({
     where: { deviceId },
     data: {
       linkedEntityId: entity.id,
@@ -205,11 +217,12 @@ async function linkEntity(deviceId: string, entityName: string) {
 }
 
 async function updateTunnel(
+  db: any,
   deviceId: string, 
   tunnelUrl: string, 
   localPort: number
 ) {
-  const device = await prisma.munreaderNexus.update({
+  const device = await db.munreaderNexus.update({
     where: { deviceId },
     data: {
       tunnelUrl,
@@ -226,8 +239,8 @@ async function updateTunnel(
   });
 }
 
-async function syncState(deviceId: string, sessionData: any) {
-  const device = await prisma.munreaderNexus.update({
+async function syncState(db: any, deviceId: string, sessionData: any) {
+  const device = await db.munreaderNexus.update({
     where: { deviceId },
     data: {
       sessionData: JSON.stringify(sessionData),
@@ -243,8 +256,8 @@ async function syncState(deviceId: string, sessionData: any) {
   });
 }
 
-async function getDeviceStatus(deviceId: string) {
-  const device = await prisma.munreaderNexus.findUnique({
+async function getDeviceStatus(db: any, deviceId: string) {
+  const device = await db.munreaderNexus.findUnique({
     where: { deviceId },
     include: {
       linkedEntity: {
@@ -283,8 +296,8 @@ async function getDeviceStatus(deviceId: string) {
   });
 }
 
-async function listDevices() {
-  const devices = await prisma.munreaderNexus.findMany({
+async function listDevices(db: any) {
+  const devices = await db.munreaderNexus.findMany({
     include: {
       linkedEntity: {
         select: {
@@ -300,7 +313,7 @@ async function listDevices() {
 
   return NextResponse.json({
     success: true,
-    devices: devices.map(d => ({
+    devices: devices.map((d: any) => ({
       deviceId: d.deviceId,
       deviceName: d.deviceName,
       status: d.status,
